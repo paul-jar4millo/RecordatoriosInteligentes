@@ -1,8 +1,13 @@
 package mx.tecnm.cdguzman.recordatoriosinteligentes
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.*
+import androidx.core.content.ContextCompat
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -45,12 +50,33 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : ComponentActivity() {
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        // Aquí podrías manejar qué pasa si no se otorga el permiso
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        checkNotificationPermission()
+
         setContent {
             RecordatoriosInteligentesTheme {
                 MainScreen()
+            }
+        }
+    }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
     }
@@ -174,7 +200,7 @@ fun ReminderItem(recordatorio: Recordatorio) {
                 text = "Recordar el: $fechaFormateada",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = androidx.compose.ui.graphics.Color.White
+                color = MaterialTheme.colorScheme.secondary
             )
         }
     }
