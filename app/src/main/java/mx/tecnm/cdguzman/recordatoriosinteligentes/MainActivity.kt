@@ -171,10 +171,10 @@ fun ReminderItem(recordatorio: Recordatorio) {
             )
             Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = " $fechaFormateada",
+                text = "Recordar el: $fechaFormateada",
                 fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.secondary
+                fontWeight = FontWeight.Bold,
+                color = androidx.compose.ui.graphics.Color.White
             )
         }
     }
