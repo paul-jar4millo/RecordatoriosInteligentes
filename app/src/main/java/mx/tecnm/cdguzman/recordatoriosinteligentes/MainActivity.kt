@@ -10,8 +10,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
@@ -32,6 +34,12 @@ import mx.tecnm.cdguzman.recordatoriosinteligentes.data.ReminderManager
 import mx.tecnm.cdguzman.recordatoriosinteligentes.model.Recordatorio
 import mx.tecnm.cdguzman.recordatoriosinteligentes.ui.theme.RecordatoriosInteligentesTheme
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import java.text.SimpleDateFormat
 import java.util.*
@@ -71,16 +79,21 @@ fun MainScreen() {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {
-            ReminderHeader()
-        },
-        bottomBar = {
-            ReminderFooter(onAddClick = {
-                val intent = Intent(context, CrearRecordatorioActivity::class.java)
-                context.startActivity(intent)
-            })
+        topBar = { ReminderHeader() },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    val intent = Intent(context, CrearRecordatorioActivity::class.java)
+                    context.startActivity(intent)
+                },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+
+                Text("+", fontSize = 24.sp, color = androidx.compose.ui.graphics.Color.White)
+            }
         }
-    ) { innerPadding ->
+    )
+    { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             ReminderList(listaRecordatorios)
         }
@@ -130,18 +143,40 @@ fun ReminderItem(recordatorio: Recordatorio) {
     val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
     val fechaFormateada = sdf.format(Date(recordatorio.horaARecordar))
 
-    Column(
+    ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-    ) {
-        Text(text = recordatorio.titulo, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Text(text = recordatorio.texto, fontSize = 14.sp)
-        Text(
-            text = "Recordar el: $fechaFormateada",
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.secondary
+            .padding(vertical = 8.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surface
         )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = recordatorio.titulo,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = recordatorio.texto,
+                fontSize = 15.sp,
+                lineHeight = 20.sp
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = " $fechaFormateada",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
     }
 }
 
